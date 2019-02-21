@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans xmlns:b="http://www.springframework.org/schema/beans"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://www.springframework.org/schema/security"
+         xsi:schemaLocation="
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <http use-expressions="true">
+
+        <intercept-url pattern="/login" access="permitAll()"/>
+        <intercept-url pattern="/welcome" access="hasRole('ROLE_USER')"/>
+
+        <!--<intercept-url pattern="/**" requires-channel="https"/>-->
+        <!--<port-mappings>-->
+            <!--<port-mapping http="8081" https="8443"/>-->
+        <!--</port-mappings>-->
+
+        <access-denied-handler error-page="/"/>
+
+        <logout logout-success-url="/" logout-url="/logout"/>
+
+        <form-login login-processing-url="/security_check"
+                    login-page="/login"
+                    default-target-url="/"
+                    authentication-failure-url="/login?error"
+                    username-parameter="username"
+                    password-parameter="password"/>
+        <logout logout-success-url="/welcome" logout-url="/logout"/>
+        <csrf disabled="true"/>
+
+    </http>
+
+    <authentication-manager id="authenticationManager">
+        <authentication-provider >
+            <password-encoder ref="bCrypt"/>
+            <jdbc-user-service
+                    id="userService"
+                    data-source-ref="dataSource"
+                    group-authorities-by-username-query="SELECT g.id, g.group_name, ga.authority FROM `groups` g, group_members gm, group_authorities ga WHERE gm.username = ? AND g.id = ga.group_id AND g.id = gm.group_id"
+                    users-by-username-query="select username, password, enabled from users where username = ?"
+                    authorities-by-username-query="SELECT gm.username, ga.authority FROM group_members gm, group_authorities ga WHERE gm.group_id=ga.group_id AND gm.username=?"
+            />
+        </authentication-provider>
+    </authentication-manager>
+
+    <b:bean id="bCrypt" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <b:constructor-arg name="strength" value="10"/>
+    </b:bean>
+</b:beans>
