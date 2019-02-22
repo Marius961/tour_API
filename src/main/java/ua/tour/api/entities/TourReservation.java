@@ -1,9 +1,6 @@
 package ua.tour.api.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class TourReservation {
@@ -12,8 +9,14 @@ public class TourReservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private Integer userId;
-    private Integer tourId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tour_id")
+    private Tour tour;
+
     private String comment;
 
     public Integer getId() {
@@ -24,20 +27,20 @@ public class TourReservation {
         this.id = id;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUser(User userId) {
+        this.user = userId;
     }
 
-    public Integer getTourId() {
-        return tourId;
+    public Tour getTour() {
+        return tour;
     }
 
-    public void setTourId(Integer tourId) {
-        this.tourId = tourId;
+    public void setTour(Tour tour) {
+        this.tour = tour;
     }
 
     public String getComment() {

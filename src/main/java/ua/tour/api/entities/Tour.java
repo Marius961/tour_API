@@ -1,9 +1,6 @@
 package ua.tour.api.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -18,7 +15,10 @@ public class Tour {
     private Date startDate;
     private Date endDate;
     private Integer numberOfSeats;
-    private Integer hotelId;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
 
     public Integer getId() {
         return id;
@@ -68,11 +68,11 @@ public class Tour {
         this.numberOfSeats = numberOfSeats;
     }
 
-    public Integer getHotelId() {
-        return hotelId;
+    public Hotel getHotel() {
+        return hotel;
     }
 
-    public void setHotelId(Integer hotelId) {
-        this.hotelId = hotelId;
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
     }
 }
