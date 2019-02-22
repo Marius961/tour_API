@@ -14,12 +14,20 @@ import java.util.Collections;
 @Service
 public class UserService implements UserDetailsService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userRepository.findByUsername(s);
+        User applicationUser = userRepository.findByUsername(s);
+        if (applicationUser == null) {
+            throw new UsernameNotFoundException(s);
+        }
+        return applicationUser;
     }
 
     public void createUser(User user) {
