@@ -2,14 +2,13 @@ package ua.tour.api.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import ua.tour.api.entities.User;
 import ua.tour.api.services.UserService;
 
 import javax.servlet.FilterChain;
@@ -18,16 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static ua.tour.api.security.SecurityConstants.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private UserService userService;
-
-    public JWTAuthorizationFilter(AuthenticationManager authManager, UserService userService) {
+    public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
-        this.userService = userService;
     }
 
     @Override
@@ -49,23 +46,29 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null) {
-            // parse the token.
-            String username = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getSubject();
 
-            if (username != null) {
-                try {
-                    UserDetails user = userService.loadUserByUsername(username);
-                    return new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
-                } catch (UsernameNotFoundException e) {
-                    return null;
-                }
+            DecodedJWT decoded = JWT.require(Algorithm.HMAC512(SECRET.getBytes()))
+                    .build()
+                    .verify(token.replace(TOKEN_PREFIX, ""));
+
+            String username = decoded.getSubject();
+            Claim roles = decoded.getClaim("roles");
+
+            if (username != null && roles.asString() != null) {
+                return new UsernamePasswordAuthenticationToken(username, null, parseRolesFromTokem(roles.asString()));
             }
             return null;
 
         }
         return null;
+    }
+
+    private List<SimpleGrantedAuthority> parseRolesFromTokem(String roles) {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        String[] s = roles.split(",");
+        for (String role: s) {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+        return authorities;
     }
 }

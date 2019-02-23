@@ -11,6 +11,7 @@ import ua.tour.api.entities.User;
 import ua.tour.api.repo.UserRepository;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -44,5 +45,15 @@ public class UserService implements UserDetailsService {
 
     public Iterable<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public void setAsAdmin(int userId) {
+        Optional opUser = userRepository.findById(userId);
+        if (opUser.isPresent()) {
+            User user = (User) opUser.get();
+            user.addRole(Role.ADMIN);
+            System.out.println(user.getRoles());
+            userRepository.save(user);
+        }
     }
 }

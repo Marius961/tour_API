@@ -37,6 +37,7 @@ public class User implements UserDetails {
     private String FullName;
     private String mobileNumber;
 
+    @Column(columnDefinition = "INTEGER")
     private boolean active;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -132,5 +133,9 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
 }

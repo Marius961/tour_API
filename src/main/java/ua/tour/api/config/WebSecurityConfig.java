@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ua.tour.api.entities.Role;
 import ua.tour.api.security.JWTAuthenticationFilter;
 import ua.tour.api.security.JWTAuthorizationFilter;
 import ua.tour.api.services.UserService;
@@ -51,10 +52,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                         .antMatchers("/").permitAll()
                         .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                        .antMatchers("/users**", "/test").hasRole("USER")
+                        .antMatchers("/test").hasAuthority(Role.USER.getAuthority())
+                        .antMatchers("/users/").hasAuthority("ADMIN")
+                        .antMatchers("/users/set-admin/{id}").hasAuthority("USER")
                         .anyRequest().authenticated()
                 .and()
-                    .addFilter(new JWTAuthorizationFilter(authenticationManager(), userService))
+                    .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                     .addFilter(configuredJwtAuthenticationFilter())
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
