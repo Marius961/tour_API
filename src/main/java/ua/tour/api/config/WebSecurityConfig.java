@@ -4,6 +4,7 @@ package ua.tour.api.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,7 +19,7 @@ import ua.tour.api.security.JWTAuthenticationFilter;
 import ua.tour.api.security.JWTAuthorizationFilter;
 import ua.tour.api.services.UserService;
 
-import static ua.tour.api.security.SecurityConstants.SIGN_UP_URL;
+import static ua.tour.api.security.SecurityConstants.SIGN_IN_URL;
 
 @Configuration
 @EnableWebSecurity
@@ -26,14 +27,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
 
+    @Autowired
+    public WebSecurityConfig(UserService userService) {
+        this.userService = userService;
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(11);
     }
 
-    @Autowired
-    public WebSecurityConfig(UserService userService) {
-        this.userService = userService;
+    private JWTAuthenticationFilter configuredJwtAuthenticationFilter() throws Exception {
+        JWTAuthenticationFilter filter = new JWTAuthenticationFilter(authenticationManager());
+        filter.setFilterProcessesUrl(SIGN_IN_URL);
+        return filter;
     }
 
     @Override
@@ -43,11 +49,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .csrf().disable()
                     .authorizeRequests()
-                        .antMatchers("/", SIGN_UP_URL, "/login").permitAll()
+                        .antMatchers("/").permitAll()
+                        .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .antMatchers("/users**", "/test").hasRole("USER")
                         .anyRequest().authenticated()
                 .and()
-                    .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                    .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                    .addFilter(new JWTAuthorizationFilter(authenticationManager(), userService))
+                    .addFilter(configuredJwtAuthenticationFilter())
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     }

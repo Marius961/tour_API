@@ -1,34 +1,36 @@
 package ua.tour.api.controllers;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ua.tour.api.entities.User;
-import ua.tour.api.repo.UserRepository;
 import ua.tour.api.services.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/auth/")
 public class UserController {
 
-    private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private UserService userService;
 
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder, UserService userService) {
-        this.userRepository = userRepository;
+    public UserController(PasswordEncoder passwordEncoder, UserService userService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
     }
 
     @PostMapping("/sign-up")
-    public void signUp(@RequestBody User user) {
+    public ResponseEntity<Void> signUp(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.createUser(user);
+        boolean isSuccess = userService.createUser(user);
+        if (isSuccess) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/all")
-    public Iterable<User> allUsers() {
-        return userRepository.findAll();
-    }
+
 }

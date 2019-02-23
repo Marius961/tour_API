@@ -1,5 +1,6 @@
 package ua.tour.api.services;
 
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,10 +31,15 @@ public class UserService implements UserDetailsService {
         return applicationUser;
     }
 
-    public void createUser(User user) {
+    public boolean createUser(User user) {
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+            return true;
+        } catch (HibernateException e) {
+            return false;
+        }
     }
 
     public Iterable<User> getAllUsers() {
