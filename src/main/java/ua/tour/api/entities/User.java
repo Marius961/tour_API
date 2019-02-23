@@ -4,6 +4,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
@@ -31,10 +33,20 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(unique = true)
+    @Size(min=3, message="Name should have at least 2 characters")
     private String username;
+
+    @Email(message ="Invalid email format")
     private String email;
+
+    @Size(min = 6, max = 32, message = "Invalid password (minimum 6 and maximum 32 characters)")
     private String password;
+
+    @Size(min = 3, message = "Full name must be longer than 2 characters")
     private String FullName;
+
+    @Size(min = 13, max = 13)
     private String mobileNumber;
 
     @Column(columnDefinition = "INTEGER")

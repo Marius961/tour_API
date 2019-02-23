@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.tour.api.entities.User;
 import ua.tour.api.services.UserService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth/")
 public class UserController {
@@ -23,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signUp(@RequestBody User user) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         boolean isSuccess = userService.createUser(user);
         if (isSuccess) {
