@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -24,6 +25,7 @@ import static ua.tour.api.security.SecurityConstants.SIGN_IN_URL;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
@@ -50,11 +52,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .csrf().disable()
                     .authorizeRequests()
-                        .antMatchers("/").permitAll()
-                        .antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                        .antMatchers("/test").hasAuthority(Role.USER.getAuthority())
-                        .antMatchers("/users/").hasAuthority("ADMIN")
-                        .antMatchers("/users/set-admin/{id}").hasAuthority("USER")
+                        .antMatchers("/api/auth/**").permitAll()
+                        .antMatchers(HttpMethod.GET,"/api/tours/").hasAuthority(Role.USER.getAuthority())
+                        .antMatchers(HttpMethod.POST, "/api/tours/").hasAuthority(Role.ADMIN.getAuthority())
                         .anyRequest().authenticated()
                 .and()
                     .addFilter(new JWTAuthorizationFilter(authenticationManager()))

@@ -33,14 +33,17 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean createUser(User user) {
-        user.setActive(true);
-        user.setRoles(Collections.singleton(Role.USER));
-        try {
-            userRepository.save(user);
-            return true;
-        } catch (HibernateException e) {
-            return false;
+        if (userRepository.findFirstByUsernameOrEmail(user.getUsername(), user.getEmail()) == null) {
+            user.setActive(true);
+            user.setRoles(Collections.singleton(Role.USER));
+            try {
+                userRepository.save(user);
+                return true;
+            } catch (HibernateException e) {
+                return false;
+            }
         }
+        return false;
     }
 
     public Iterable<User> getAllUsers() {
@@ -55,5 +58,13 @@ public class UserService implements UserDetailsService {
             System.out.println(user.getRoles());
             userRepository.save(user);
         }
+    }
+
+    public boolean isRegistered(String username) throws HibernateException {
+        return userRepository.findByUsername(username) != null;
+    }
+
+    public boolean isEmailExist(String email) {
+        return userRepository.findByEmail(email) != null;
     }
 }

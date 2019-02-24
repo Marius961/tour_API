@@ -11,15 +11,18 @@ import ua.tour.api.entities.User;
 import ua.tour.api.services.UserService;
 
 import javax.validation.Valid;
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth/")
-public class UserController {
+public class AuthController {
+
 
     private PasswordEncoder passwordEncoder;
     private UserService userService;
 
-    public UserController(PasswordEncoder passwordEncoder, UserService userService) {
+    public AuthController(PasswordEncoder passwordEncoder, UserService userService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
     }
@@ -31,8 +34,16 @@ public class UserController {
         if (isSuccess) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PostMapping("/is-registered")
+    public Map<String, Boolean> checkUsername(@RequestBody Map<String, String> payload) {
+        return Collections.singletonMap("isRegistered", userService.isRegistered(payload.get("username")));
+    }
 
+    @PostMapping("/is-email-exist")
+    public Map<String, Boolean> checkEmail(@RequestBody Map<String, String> payload) {
+        return Collections.singletonMap("isExist", userService.isEmailExist(payload.get("email")));
+    }
 }

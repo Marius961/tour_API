@@ -1,6 +1,12 @@
 package ua.tour.api.entities;
 
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -10,11 +16,22 @@ public class Tour {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @NotBlank
+    @Size(min = 4, max = 32, message = "Min title length is 4 characters and max 32")
     private String title;
+
+    @NotBlank
+    @Size(min = 32, max = 2048, message = "Description length must be more than 31 characters but less then 2049 ")
     private String description;
+
+    @NotNull
     private Date startDate;
+
+    @NotNull
     private Date endDate;
-    private Integer numberOfSeats;
+
+    @NotNull
+    private Integer seatCount;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hotel_id")
@@ -60,12 +77,12 @@ public class Tour {
         this.endDate = endDate;
     }
 
-    public Integer getNumberOfSeats() {
-        return numberOfSeats;
+    public Integer getSeatCount() {
+        return seatCount;
     }
 
-    public void setNumberOfSeats(Integer numberOfSeats) {
-        this.numberOfSeats = numberOfSeats;
+    public void setSeatCount(Integer seatCount) {
+        this.seatCount = seatCount;
     }
 
     public Hotel getHotel() {

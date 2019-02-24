@@ -1,6 +1,7 @@
 package ua.tour.api.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 public class TourReservation {
@@ -17,6 +18,7 @@ public class TourReservation {
     @JoinColumn(name = "tour_id")
     private Tour tour;
 
+    @Size(max = 2048, message = "Max chars in message - 2048")
     private String comment;
 
     public Integer getId() {
