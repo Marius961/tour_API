@@ -1,6 +1,9 @@
 package ua.tour.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -10,16 +13,24 @@ public class TourReservation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long user_id;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tour_id")
     private Tour tour;
 
     @Size(max = 2048, message = "Max chars in message - 2048")
     private String comment;
+
+    private boolean isActive;
 
     public Long getId() {
         return id;
@@ -51,5 +62,17 @@ public class TourReservation {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
