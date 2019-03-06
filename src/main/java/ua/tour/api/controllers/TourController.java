@@ -23,13 +23,13 @@ public class TourController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTour(@PathVariable Long id) {
+    public void deleteTour(@PathVariable Long id) throws Exception {
         tourService.removeTour(id);
     }
 
 
     @PutMapping
-    public void updateTour(@Valid @RequestBody Tour tour) {
+    public void updateTour(@Valid @RequestBody Tour tour) throws Exception {
         tourService.updateTour(tour);
     }
 
