@@ -2,6 +2,7 @@ package ua.tour.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.tour.api.entities.Tour;
 import ua.tour.api.entities.TourReservation;
 import ua.tour.api.entities.User;
 import ua.tour.api.repo.TourRepository;
@@ -29,14 +30,18 @@ public class ReservationService {
     }
 
     public void addReservation(TourReservation reservation, Principal principal) throws Exception {
-        boolean isTourExist = tourRepository.existsById(reservation.getTour().getId());
-        if (isTourExist) {
-            User currentUser = (User) userService.loadUserByUsername(principal.getName());
-            if (currentUser != null) {
-                reservation.setActive(true);
-                reservation.setUser(currentUser);
-                tourReservationRepository.save(reservation);
-            }
+        Optional<Tour> opTour = tourRepository.findById(reservation.getTour().getId());
+        if (opTour.isPresent()) {
+            Tour tour = opTour.get();
+            Long reservationCount = tourReservationRepository.countByTour(tour);
+            if (reservationCount < tour.getSeatCount()) {
+                User currentUser = (User) userService.loadUserByUsername(principal.getName());
+                if (currentUser != null) {
+                    reservation.setActive(true);
+                    reservation.setUser(currentUser);
+                    tourReservationRepository.save(reservation);
+                }
+            } else throw new Exception();
         } else throw new Exception();
 
     }
