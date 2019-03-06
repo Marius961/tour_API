@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public void setAsAdmin(int userId) {
+    public void setAsAdmin(Long userId) {
         Optional opUser = userRepository.findById(userId);
         if (opUser.isPresent()) {
             User user = (User) opUser.get();

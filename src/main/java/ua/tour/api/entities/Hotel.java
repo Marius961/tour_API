@@ -11,7 +11,7 @@ public class Hotel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @Size(min = 3,message = "Hotel name must be longer than 2 characters")
     private String name;
@@ -25,11 +25,11 @@ public class Hotel {
     @Size(min = 2)
     private String location;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

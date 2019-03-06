@@ -12,13 +12,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 @Component
-public class UserAdder {
+public class UserCreator {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserAdder(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserCreator(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }

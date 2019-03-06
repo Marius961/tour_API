@@ -1,12 +1,9 @@
 package ua.tour.api.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ua.tour.api.entities.User;
 import ua.tour.api.services.UserService;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users/")
@@ -25,7 +22,7 @@ public class AdminController {
     }
 
     @PostMapping("/set-admin/{id}")
-    public void setAdmin(@PathVariable int id) {
+    public void setAdmin(@PathVariable Long id) {
         userService.setAsAdmin(id);
     }
 }

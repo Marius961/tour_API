@@ -14,7 +14,7 @@ public class Tour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @NotBlank
     @Size(min = 4, max = 32, message = "Min title length is 4 characters and max 32")
@@ -37,11 +37,11 @@ public class Tour {
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -66,7 +66,7 @@ public class Tour {
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = convertToJDate(startDate);
     }
 
     public Date getEndDate() {
@@ -74,7 +74,7 @@ public class Tour {
     }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        this.endDate = convertToJDate(endDate);
     }
 
     public Integer getSeatCount() {
@@ -91,5 +91,9 @@ public class Tour {
 
     public void setHotel(Hotel hotel) {
         this.hotel = hotel;
+    }
+
+    private Date convertToJDate(Date date) {
+        return new Date(date.getTime()*1000 );
     }
 }

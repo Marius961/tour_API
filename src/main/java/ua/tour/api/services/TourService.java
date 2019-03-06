@@ -6,6 +6,7 @@ import ua.tour.api.entities.Tour;
 import ua.tour.api.repo.TourRepository;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class TourService {
@@ -18,12 +19,21 @@ public class TourService {
     }
 
     public void createNewTour(Tour tour) {
-        tour.setStartDate(new Date(tour.getStartDate().getTime()*1000));
-        tour.setEndDate(new Date(tour.getEndDate().getTime()*1000));
         tourRepository.save(tour);
     }
 
+    public void removeTour(Long tourId) {
+        tourRepository.deleteById(tourId);
+    }
+
+
     public Iterable<Tour> getAllTours() {
         return tourRepository.findAll();
+    }
+
+    public void updateTour(Tour tour) {
+        if (tourRepository.existsById(tour.getId())) {
+            tourRepository.save(tour);
+        }
     }
 }

@@ -8,7 +8,7 @@ public class TourReservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -21,11 +21,11 @@ public class TourReservation {
     @Size(max = 2048, message = "Max chars in message - 2048")
     private String comment;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
