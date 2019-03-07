@@ -1,13 +1,13 @@
 package ua.tour.api.controllers;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tour.api.entities.User;
+import ua.tour.api.exceptions.UserRegistrationFailedException;
 import ua.tour.api.services.UserService;
 
 import javax.validation.Valid;
@@ -18,23 +18,19 @@ import java.util.Map;
 @RequestMapping("/api/auth/")
 public class AuthController {
 
-
     private PasswordEncoder passwordEncoder;
     private UserService userService;
 
-    public AuthController(PasswordEncoder passwordEncoder, UserService userService) {
-        this.passwordEncoder = passwordEncoder;
+    @Autowired
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signUp(@Valid @RequestBody User user) {
+    public void signUp(@Valid @RequestBody User user) throws UserRegistrationFailedException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        boolean isSuccess = userService.createUser(user);
-        if (isSuccess) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        userService.createUser(user);
     }
 
     @PostMapping("/is-registered")

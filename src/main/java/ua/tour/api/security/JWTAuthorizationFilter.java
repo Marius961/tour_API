@@ -58,7 +58,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                 return new UsernamePasswordAuthenticationToken(username, null, parseRolesFromTokem(roles.asString()));
             }
             return null;
-
         }
         return null;
     }

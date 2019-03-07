@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ua.tour.api.entities.Role;
 import ua.tour.api.entities.User;
+import ua.tour.api.exceptions.UserRegistrationFailedException;
 import ua.tour.api.repo.UserRepository;
 
 import java.util.Collections;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -32,18 +34,17 @@ public class UserService implements UserDetailsService {
         return applicationUser;
     }
 
-    public boolean createUser(User user) {
+    public void createUser(User user) throws UserRegistrationFailedException {
         if (userRepository.findFirstByUsernameOrEmail(user.getUsername(), user.getEmail()) == null) {
             user.setActive(true);
             user.setRoles(Collections.singleton(Role.USER));
             try {
                 userRepository.save(user);
-                return true;
             } catch (HibernateException e) {
-                return false;
+                throw new UserRegistrationFailedException("Failed to register new user.");
             }
-        }
-        return false;
+        } else throw new UserRegistrationFailedException("Failed to register new user, because username or email already exist.");
+
     }
 
     public Iterable<User> getAllUsers() {

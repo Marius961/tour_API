@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.tour.api.entities.Hotel;
 import ua.tour.api.entities.Tour;
+import ua.tour.api.exceptions.DeletionException;
+import ua.tour.api.exceptions.NotFoundException;
 import ua.tour.api.repo.HotelRepository;
 import ua.tour.api.repo.TourRepository;
 
@@ -25,11 +27,11 @@ public class HotelService {
         return hotelRepository.findAll();
     }
 
-    public Hotel getHotelById(Long id) throws Exception {
+    public Hotel getHotelById(Long id) throws NotFoundException {
         Optional opHotel = hotelRepository.findById(id);
         if (opHotel.isPresent()) {
             return (Hotel) opHotel.get();
-        } else throw new Exception();
+        } else throw new NotFoundException("Hotel with id: " + id + " not found");
     }
 
     public long addHotel(Hotel hotel) {
@@ -37,21 +39,22 @@ public class HotelService {
         return hotel.getId();
     }
 
-    public void deleteHotel(Long hotelId) throws Exception {
+    public void deleteHotel(Long hotelId) throws NotFoundException, DeletionException {
         Optional<Hotel> opHotel = hotelRepository.findById(hotelId);
         if (opHotel.isPresent()) {
             Optional<Tour> opTour = tourRepository.findFirstByHotel(opHotel.get());
             if (opTour.isPresent()) {
-                throw new Exception();
+                throw new DeletionException("Unable to delete hotel because there are tours to this hotel.");
             } else hotelRepository.deleteById(hotelId);
 
-        }
+        } else throw new NotFoundException("Unable to delete non-existent hotel.");
 
     }
 
-    public void updateHotel(Hotel hotel) throws Exception {
+    public void updateHotel(Hotel hotel) throws NotFoundException {
         if (hotelRepository.existsById(hotel.getId())) {
             hotelRepository.save(hotel);
-        } else throw new Exception();
+        } else throw new NotFoundException("Unable to update non-existent hotel with id: " + hotel.getId());
+
     }
 }

@@ -1,10 +1,13 @@
 package ua.tour.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ua.tour.api.entities.Tour;
 import ua.tour.api.entities.TourReservation;
 import ua.tour.api.entities.User;
+import ua.tour.api.exceptions.NotFoundException;
+import ua.tour.api.exceptions.SeatsCountOverflowException;
 import ua.tour.api.repo.TourRepository;
 import ua.tour.api.repo.TourReservationRepository;
 
@@ -29,7 +32,7 @@ public class ReservationService {
         this.tourRepository = tourRepository;
     }
 
-    public void addReservation(TourReservation reservation, Principal principal) throws Exception {
+    public void addReservation(TourReservation reservation, Principal principal) throws SeatsCountOverflowException, NotFoundException {
         Optional<Tour> opTour = tourRepository.findById(reservation.getTour().getId());
         if (opTour.isPresent()) {
             Tour tour = opTour.get();
@@ -41,24 +44,24 @@ public class ReservationService {
                     reservation.setUser(currentUser);
                     tourReservationRepository.save(reservation);
                 }
-            } else throw new Exception();
-        } else throw new Exception();
+            } else throw new SeatsCountOverflowException("Seats for the selected tour have expired");
+        } else throw new NotFoundException("Tour with id: " + reservation.getTour().getId() + " not found");
 
     }
 
-    public Iterable<TourReservation> getAllUserReservations(Principal principal) throws Exception {
+    public Iterable<TourReservation> getAllUserReservations(Principal principal) throws UsernameNotFoundException {
         User currentUser = (User) userService.loadUserByUsername(principal.getName());
         if (currentUser != null) {
             return tourReservationRepository.findAllByUser(currentUser);
-        } else throw new Exception();
+        } else throw new UsernameNotFoundException("User with username " + principal.getName() + " not found");
     }
 
-    public void cancelReservation(Long reservationId) throws Exception {
+    public void cancelReservation(Long reservationId) throws NotFoundException {
         Optional<TourReservation> opReservation = tourReservationRepository.findById(reservationId);
         if (opReservation.isPresent()) {
             TourReservation reservation = opReservation.get();
             reservation.setActive(false);
             tourReservationRepository.save(reservation);
-        } else throw new Exception();
+        } else throw new NotFoundException("Reservation with id: " + reservationId + " not found");
     }
 }

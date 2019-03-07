@@ -1,8 +1,10 @@
 package ua.tour.api.controllers;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.tour.api.entities.Tour;
+import ua.tour.api.exceptions.DeletionException;
+import ua.tour.api.exceptions.NotFoundException;
+import ua.tour.api.exceptions.ReservationsExistException;
 import ua.tour.api.services.TourService;
 
 import javax.validation.Valid;
@@ -23,19 +25,19 @@ public class TourController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTour(@PathVariable Long id) throws Exception {
+    public void deleteTour(@PathVariable Long id) throws ReservationsExistException, DeletionException {
         tourService.removeTour(id);
     }
 
 
     @PutMapping
-    public void updateTour(@Valid @RequestBody Tour tour) throws Exception {
+    public void updateTour(@Valid @RequestBody Tour tour) throws NotFoundException {
         tourService.updateTour(tour);
     }
 
 
     @PostMapping
-    public void createTour(@Valid @RequestBody Tour tour) {
+    public void createTour(@Valid @RequestBody Tour tour) throws NotFoundException {
         tourService.createNewTour(tour);
     }
 }
