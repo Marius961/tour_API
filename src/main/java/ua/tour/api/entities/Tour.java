@@ -37,6 +37,9 @@ public class Tour {
     @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
+    @Column(updatable = false)
+    private String imageSrc;
+
     public Long getId() {
         return id;
     }
@@ -95,5 +98,13 @@ public class Tour {
 
     private Date convertToJDate(Date date) {
         return new Date(date.getTime()*1000 );
+    }
+
+    public String getImageSrc() {
+        return imageSrc;
+    }
+
+    public void setImageSrc(String imageSrc) {
+        this.imageSrc = imageSrc;
     }
 }

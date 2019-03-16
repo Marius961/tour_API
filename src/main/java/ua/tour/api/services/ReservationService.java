@@ -64,4 +64,8 @@ public class ReservationService {
             tourReservationRepository.save(reservation);
         } else throw new NotFoundException("Reservation with id: " + reservationId + " not found");
     }
+
+    public Iterable<TourReservation> getAllReservations() {
+        return tourReservationRepository.findAll();
+    }
 }

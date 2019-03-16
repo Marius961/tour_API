@@ -1,0 +1,727 @@
+{
+	"info": {
+		"_postman_id": "f9c47dda-82ea-4ada-b159-11b33c370f25",
+		"name": "tour_api",
+		"description": "Просте API для керування турами, їх організацією, та обробкою резервувань.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Користувач",
+			"item": [
+				{
+					"name": "Реєстрація користувача (ALL)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"id\":5,\r\n\t\"username\":\"usr1231\",\r\n\t\"email\":\"example@email.com\",\r\n\t\"password\":\"wqd123dfqd12evh\",\r\n\t\"mobileNumber\":\"+380678187548\",\r\n\t\"fullName\":\"Бондаренко Іван Васильович\"\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/auth/sign-up",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Вхід (ALL)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"username\" : \"usr1231\",\r\n\t\"password\" : \"wqd123dfqd12evh\"\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/auth/sign-in",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"sign-in"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Тури",
+			"item": [
+				{
+					"name": "Додати тур (ADMIN)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "tour",
+									"value": "{\n    \"title\": \"ВІДПОЧИНОК НА МАЛЬДІВАХ\",\n    \"description\": \"Мальдіви - це тропічна острівна держава, відома своїми пляжами, бірюзовими лагунами і просторими рифами. Первозданна краса островів пробуджує уяву і на суші, і під водою. Вода в океані настільки тепла, що немає необхідності одягати гідрокостюм.\",\n    \"startDate\": \"1561374000\",\n    \"endDate\": \"1562605200\",\n    \"seatCount\": 18,\n    \"hotel\": {\n    \t\"id\": 2\n    }\n}",
+									"contentType": "application/json",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/tours/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tours",
+								""
+							]
+						},
+						"description": "Додати новий тур. Можливо тільки у випадку якщо буде перед цим додано хочаб один готель. В іншому випадку повертає помилку."
+					},
+					"response": []
+				},
+				{
+					"name": "Список всіх турів (ALL)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/tours/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tours",
+								""
+							]
+						},
+						"description": "Повертає список всіх турів з вкладеними готелями."
+					},
+					"response": []
+				},
+				{
+					"name": "Видалити тур (ADMIN)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/tours/3",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tours",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Оновити тур (ADMIN)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"id\": 2,\r\n    \"title\": \"Updated title\",\r\n    \"description\": \"Updated description updated dqwdq dqwdqwd\",\r\n    \"startDate\": \"1483221600\",\r\n    \"endDate\": \"1483221600\",\r\n    \"seatCount\": 32,\r\n    \"hotel_id\": 0\r\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/tours/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"tours",
+								""
+							]
+						},
+						"description": "Дозволяє оновити дані туру. Зображення оновленню не підлягає."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Готелі",
+			"item": [
+				{
+					"name": "Додати готель (ADMIN)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": ""
+								},
+								{
+									"key": "hotel",
+									"value": "{\n\t\"name\": \"Meeru Island Resort & Spa\",\n\t\"description\": \"Курортный спа-отель Meeru Island расположен на острове Мируфенфуши. К услугам гостей бесплатный Wi-Fi, открытый бассейн, 2 бассейна с пресной водой на пляже, детская игровая площадка и бар.\",\n\t\"country\": \"Мальдівська Республіка\",\n\t\"location\": \"Мальдіви\"\n}",
+									"contentType": "application/json",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/hotel",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"hotel"
+							]
+						},
+						"description": "Дозволяє додати готель та прикріпити зображення до нього."
+					},
+					"response": []
+				},
+				{
+					"name": "Всі готелі (ALL)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/hotel/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"hotel",
+								""
+							]
+						},
+						"description": "Виводить список всіх готелів."
+					},
+					"response": []
+				},
+				{
+					"name": "Видалити готель (ADMIN)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/hotel/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"hotel",
+								"2"
+							]
+						},
+						"description": "Видаляє вказаний готель."
+					},
+					"response": []
+				},
+				{
+					"name": "Оновити готель (ADMIN)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": 7,\n\t\"name\": \"hotel 1\",\n\t\"description\": \"hotel description for more than 31 character\",\n\t\"country\": \"Germany\",\n\t\"location\": \"Germany\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/hotel/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"hotel",
+								""
+							]
+						},
+						"description": "Оновлює готель по id."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Резервування",
+			"item": [
+				{
+					"name": "Зарезервувати місце (USER)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"tour\": {\n\t\t\"id\": 3\n\t},\n\t\"comment\": \"Коментар для із додатковою інформацією\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/reservations",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							]
+						},
+						"description": "Дозволяє зарезервувати місце у турі."
+					},
+					"response": []
+				},
+				{
+					"name": "Всі резервування користувача (USER)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/reservations",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							]
+						},
+						"description": "Дозволяє користувачу отримати всі його резервування."
+					},
+					"response": []
+				},
+				{
+					"name": "Скасувати резервацію (ADMIN)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c2VyMTIzIiwicm9sZXMiOiJVU0VSIiwiZXhwIjoxNTUxOTE5MDI1LCJpYXQiOjE1NTE4ODY0ODl9.fEBjC6M_y9xhRC52AO_cR0sc6URZ3xS-KQ3yvb1_NCQUVSdXz7e1JhCJMIEqSV9gy5sRkJBAafzFAN6lW3M11w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/reservations/cancel/2",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"cancel",
+								"2"
+							]
+						},
+						"description": "Дозволяє адміністратору скасувати резервування."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Резервування всіх користувачів (ADMIN)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/admin/all-reservations",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"all-reservations"
+							]
+						},
+						"description": "Дозволяє отримати всі резервування всіх користувачів по даті."
+					},
+					"response": []
+				},
+				{
+					"name": "Всі користувачі",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/admin/all-users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"all-users"
+							]
+						},
+						"description": "Дозволяє отримати дані всіх користувачів."
+					},
+					"response": []
+				},
+				{
+					"name": "Дати користувачу права адміністратора",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/api/admin/users/set-admin/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"set-admin",
+								"1"
+							]
+						},
+						"description": "Дає користувачу з вибраним id права адміністратора."
+					},
+					"response": []
+				},
+				{
+					"name": "Забрати права адміністратора",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {},
+						"url": {
+							"raw": "{{url}}/api/admin/users/remove-admin/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"remove-admin",
+								"1"
+							]
+						},
+						"description": "Забирає в користувача права адміністратора."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "24b7c496-8a23-4fad-8d88-1fe3b82e5ce5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "69db67e3-21b2-4baf-9422-78ac7d6eef9e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "263d630d-8e91-4a5a-81b0-47354235f867",
+			"key": "username",
+			"value": "user",
+			"type": "string"
+		}
+	]
+}

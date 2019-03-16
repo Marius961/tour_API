@@ -24,7 +24,7 @@ public class User implements UserDetails {
         this.username = username;
         this.email = email;
         this.password = password;
-        FullName = fullName;
+        this.fullName = fullName;
         this.mobileNumber = mobileNumber;
     }
 
@@ -49,7 +49,7 @@ public class User implements UserDetails {
 
     @NotBlank
     @Size(min = 3, message = "Full name must be longer than 2 characters")
-    private String FullName;
+    private String fullName;
 
     @NotBlank
     @Size(min = 13, max = 13, message = "Phone number must consist of 13 digits")
@@ -124,11 +124,11 @@ public class User implements UserDetails {
     }
 
     public String getFullName() {
-        return FullName;
+        return fullName;
     }
 
     public void setFullName(String fullName) {
-        FullName = fullName;
+        this.fullName = fullName;
     }
 
     public String getMobileNumber() {
@@ -157,5 +157,9 @@ public class User implements UserDetails {
 
     public void addRole(Role role) {
         this.roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        this.roles.remove(role);
     }
 }

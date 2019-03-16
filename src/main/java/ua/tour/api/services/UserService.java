@@ -51,12 +51,24 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public void setAsAdmin(Long userId) {
+    public void addAdminRole(Long userId) {
         Optional opUser = userRepository.findById(userId);
         if (opUser.isPresent()) {
             User user = (User) opUser.get();
-            user.addRole(Role.ADMIN);
-            System.out.println(user.getRoles());
+            if (!user.getRoles().contains(Role.ADMIN)) {
+                user.addRole(Role.ADMIN);
+            }
+            userRepository.save(user);
+        }
+    }
+
+    public void removeAdminRole(Long userId) {
+        Optional opUser = userRepository.findById(userId);
+        if (opUser.isPresent()) {
+            User user = (User) opUser.get();
+            if (user.getRoles().contains(Role.ADMIN)) {
+                user.removeRole(Role.ADMIN);
+            }
             userRepository.save(user);
         }
     }

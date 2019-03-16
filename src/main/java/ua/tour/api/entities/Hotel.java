@@ -1,9 +1,6 @@
 package ua.tour.api.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -24,6 +21,9 @@ public class Hotel {
 
     @Size(min = 2)
     private String location;
+
+    @Column(updatable = false)
+    private String imageSrc;
 
     public Long getId() {
         return id;
@@ -63,5 +63,13 @@ public class Hotel {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getImageSrc() {
+        return imageSrc;
+    }
+
+    public void setImageSrc(String imageSrc) {
+        this.imageSrc = imageSrc;
     }
 }
