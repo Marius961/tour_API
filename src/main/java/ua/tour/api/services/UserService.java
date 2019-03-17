@@ -2,6 +2,8 @@ package ua.tour.api.services;
 
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,6 +41,7 @@ public class UserService implements UserDetailsService {
             user.setActive(true);
             user.setRoles(Collections.singleton(Role.USER));
             try {
+                user.setId(null);
                 userRepository.save(user);
             } catch (HibernateException e) {
                 throw new UserRegistrationFailedException("Failed to register new user.");
@@ -47,8 +50,8 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public Iterable<User> getAllUsers() {
-        return userRepository.findAll();
+    public Page<User> getAllUsers(int page) {
+        return userRepository.findAll(PageRequest.of(page, 15));
     }
 
     public void addAdminRole(Long userId) {

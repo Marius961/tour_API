@@ -1,5 +1,7 @@
 package ua.tour.api.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.tour.api.entities.Hotel;
@@ -26,8 +28,8 @@ public class HotelService {
         this.imageService = imageService;
     }
 
-    public Iterable<Hotel> getAllHotels() {
-        return hotelRepository.findAll();
+    public Page<Hotel> getAllHotels(int page) {
+        return hotelRepository.findAll(PageRequest.of(page, 15));
     }
 
     public Hotel getHotelById(Long id) throws NotFoundException {
@@ -38,6 +40,7 @@ public class HotelService {
     }
 
     public long addHotel(Hotel hotel, MultipartFile file) throws IOException {
+        hotel.setId(null);
         hotel.setImageSrc(imageService.saveImage(file));
         hotelRepository.save(hotel);
         return hotel.getId();
@@ -50,7 +53,7 @@ public class HotelService {
             if (opTour.isPresent()) {
                 throw new DeletionException("Unable to delete hotel because there are tours to this hotel.");
             } else {
-                imageService.deleteFile(opHotel.get().getImageSrc());
+                imageService.deleteImage(opHotel.get().getImageSrc());
                 hotelRepository.deleteById(hotelId);
             }
 

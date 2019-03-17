@@ -1,10 +1,14 @@
 package ua.tour.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ua.tour.api.entities.Tour;
-import ua.tour.api.exceptions.*;
+import ua.tour.api.exceptions.DeletionException;
+import ua.tour.api.exceptions.NotFoundException;
+import ua.tour.api.exceptions.ReservationsExistException;
 import ua.tour.api.repo.HotelRepository;
 import ua.tour.api.repo.TourRepository;
 import ua.tour.api.repo.TourReservationRepository;
@@ -31,7 +35,9 @@ public class TourService {
 
     public void createNewTour(Tour tour, MultipartFile file) throws NotFoundException, IOException {
         boolean isHotelExist = hotelRepository.existsById(tour.getHotel().getId());
-        if (isHotelExist) {
+        boolean isTourTitleOrDescriptionExist = tourRepository.existsByTitleOrDescription(tour.getTitle(), tour.getDescription());
+        if (isHotelExist && !isTourTitleOrDescriptionExist) {
+            tour.setId(null);
             tour.setImageSrc(imageService.saveImage(file));
             tourRepository.save(tour);
         } else throw new NotFoundException("Tour can not be created because hotel with id: " + tour.getHotel().getId() + " not exist.");
@@ -42,15 +48,15 @@ public class TourService {
         if (opTour.isPresent()) {
             Long reservationsCount = reservationRepository.countByTour(opTour.get());
             if (reservationsCount == 0) {
-                imageService.deleteFile(opTour.get().getImageSrc());
+                imageService.deleteImage(opTour.get().getImageSrc());
                 tourRepository.deleteById(tourId);
             } else throw new ReservationsExistException("The tour can not be deleted because reservations have been found.");
         } else throw new DeletionException("Unable to delete tour, because it not exist");
     }
 
 
-    public Iterable<Tour> getAllTours() {
-        return tourRepository.findAll();
+    public Page<Tour> getAllTours(int page) {
+        return tourRepository.findAll(PageRequest.of(page, 10));
     }
 
     public void updateTour(Tour tour) throws NotFoundException {

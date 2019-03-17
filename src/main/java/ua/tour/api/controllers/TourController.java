@@ -1,5 +1,6 @@
 package ua.tour.api.controllers;
 
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.tour.api.entities.Tour;
@@ -22,9 +23,9 @@ public class TourController {
         this.tourService = tourService;
     }
 
-    @GetMapping
-    public Iterable<Tour> getAllTours() {
-        return tourService.getAllTours();
+    @GetMapping("/{page}")
+    public Page<Tour> getAllTours(@PathVariable int page) {
+        return tourService.getAllTours(page);
     }
 
     @DeleteMapping("/{id}")

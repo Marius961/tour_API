@@ -1,6 +1,7 @@
 package ua.tour.api.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.tour.api.entities.Hotel;
@@ -25,9 +26,9 @@ public class HotelController {
         this.hotelService = hotelService;
     }
 
-    @GetMapping
-    public Iterable<Hotel> getAllHotels() {
-        return hotelService.getAllHotels();
+    @GetMapping("/{page}")
+    public Page<Hotel> getAllHotels(@PathVariable int page) {
+        return hotelService.getAllHotels(page);
     }
 
     @GetMapping("/{id}")

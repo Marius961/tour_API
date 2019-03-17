@@ -21,9 +21,9 @@ public class AdminController {
     }
 
 
-    @GetMapping("all-users")
-    public Iterable<User> allUsers() {
-        return userService.getAllUsers();
+    @GetMapping("all-users/{page}")
+    public Iterable<User> allUsers(@PathVariable int page) {
+        return userService.getAllUsers(page);
     }
 
     @PostMapping("/users/set-admin/{id}")
@@ -36,8 +36,8 @@ public class AdminController {
         userService.removeAdminRole(id);
     }
 
-    @GetMapping("/all-reservations")
-    public Iterable<TourReservation> getAllReservations() {
-        return reservationService.getAllReservations();
+    @GetMapping("/all-reservations/{page}")
+    public Iterable<TourReservation> getAllReservations(@PathVariable int page) {
+        return reservationService.getAllReservations(page);
     }
 }

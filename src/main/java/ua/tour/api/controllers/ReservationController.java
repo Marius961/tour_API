@@ -1,6 +1,7 @@
 package ua.tour.api.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import ua.tour.api.entities.TourReservation;
 import ua.tour.api.exceptions.NotFoundException;
@@ -26,9 +27,9 @@ public class ReservationController {
         reservationService.addReservation(reservation, principal);
     }
 
-    @GetMapping
-    public Iterable<TourReservation> getAllUserReservations(Principal principal) {
-        return reservationService.getAllUserReservations(principal);
+    @GetMapping("/{page}")
+    public Page<TourReservation> getAllUserReservations(@PathVariable int page, Principal principal) {
+        return reservationService.getAllUserReservations(page, principal);
     }
 
     @PostMapping("/cancel/{id}")

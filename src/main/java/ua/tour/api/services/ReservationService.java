@@ -1,6 +1,8 @@
 package ua.tour.api.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ua.tour.api.entities.Tour;
@@ -40,6 +42,7 @@ public class ReservationService {
             if (reservationCount < tour.getSeatCount()) {
                 User currentUser = (User) userService.loadUserByUsername(principal.getName());
                 if (currentUser != null) {
+                    reservation.setId(null);
                     reservation.setActive(true);
                     reservation.setUser(currentUser);
                     tourReservationRepository.save(reservation);
@@ -49,10 +52,10 @@ public class ReservationService {
 
     }
 
-    public Iterable<TourReservation> getAllUserReservations(Principal principal) throws UsernameNotFoundException {
+    public Page<TourReservation> getAllUserReservations(int page, Principal principal) throws UsernameNotFoundException {
         User currentUser = (User) userService.loadUserByUsername(principal.getName());
         if (currentUser != null) {
-            return tourReservationRepository.findAllByUser(currentUser);
+            return tourReservationRepository.findAllByUser(currentUser, PageRequest.of(page, 15));
         } else throw new UsernameNotFoundException("User with username " + principal.getName() + " not found");
     }
 
@@ -65,7 +68,7 @@ public class ReservationService {
         } else throw new NotFoundException("Reservation with id: " + reservationId + " not found");
     }
 
-    public Iterable<TourReservation> getAllReservations() {
-        return tourReservationRepository.findAll();
+    public Page<TourReservation> getAllReservations(int page) {
+        return tourReservationRepository.findAll(PageRequest.of(page, 16));
     }
 }

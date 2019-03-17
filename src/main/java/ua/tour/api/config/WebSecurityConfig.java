@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .csrf().disable()
                     .authorizeRequests()
                         .antMatchers("/api/auth/**").permitAll()
-                        .antMatchers(HttpMethod.GET,"/api/reservations").hasAuthority(Role.USER.getAuthority())
+                        .antMatchers(HttpMethod.GET,"/api/reservations/*").hasAuthority(Role.USER.getAuthority())
                         .antMatchers(HttpMethod.GET, "/img/**", "/api/tours/*","/api/hotel", "/api/hotel/*").permitAll()
                         .antMatchers(HttpMethod.POST,"/api/reservations").hasAuthority(Role.USER.getAuthority())
                         .antMatchers(HttpMethod.POST,"/api/reservations/cancel/{id}").hasAuthority(Role.ADMIN.getAuthority())
