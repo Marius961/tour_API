@@ -19,14 +19,14 @@ public class TourReservation {
     private User user;
 
     @Column(name = "user_id", insertable = false, updatable = false)
-    private Long user_id;
+    private Long userId;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tour_id")
     private Tour tour;
 
-    @Size(max = 2048, message = "Max chars in message - 2048")
+    @Size(max = 2048)
     private String comment;
 
     private boolean isActive;
@@ -63,8 +63,8 @@ public class TourReservation {
         this.comment = comment;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
     public boolean isActive() {

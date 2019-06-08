@@ -23,8 +23,8 @@ public class TourController {
         this.tourService = tourService;
     }
 
-    @GetMapping("/{page}")
-    public Page<Tour> getAllTours(@PathVariable int page) {
+    @GetMapping
+    public Page<Tour> getAllTours(@RequestParam(name = "p") int page) {
         return tourService.getAllTours(page);
     }
 

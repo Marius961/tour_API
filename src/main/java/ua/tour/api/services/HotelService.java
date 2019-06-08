@@ -40,9 +40,12 @@ public class HotelService {
     }
 
     public long addHotel(Hotel hotel, MultipartFile file) throws IOException {
-        hotel.setId(null);
-        hotel.setImageSrc(imageService.saveImage(file));
-        hotelRepository.save(hotel);
+        if (!hotelRepository.existsByName(hotel.getName())) {
+            hotel.setId(null);
+            hotel.setImageSrc(imageService.saveImage(file));
+            hotelRepository.save(hotel);
+        } else throw new IllegalArgumentException("Hotel with name: " + hotel.getName() + " already exists");
+
         return hotel.getId();
     }
 
@@ -63,7 +66,9 @@ public class HotelService {
 
     public void updateHotel(Hotel hotel) throws NotFoundException {
         if (hotelRepository.existsById(hotel.getId())) {
-            hotelRepository.save(hotel);
+            if (hotelRepository.countByNameAndNotId(hotel.getName(), hotel.getId()) == 0) {
+                hotelRepository.save(hotel);
+            } else throw new IllegalArgumentException("Cannot update hotel. Hotel with name: " + hotel.getName() + "already exists");
         } else throw new NotFoundException("Unable to update non-existent hotel with id: " + hotel.getId());
 
     }

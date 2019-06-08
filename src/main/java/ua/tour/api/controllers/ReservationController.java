@@ -27,8 +27,8 @@ public class ReservationController {
         reservationService.addReservation(reservation, principal);
     }
 
-    @GetMapping("/{page}")
-    public Page<TourReservation> getAllUserReservations(@PathVariable int page, Principal principal) {
+    @GetMapping
+    public Page<TourReservation> getAllUserReservations(@RequestParam(name = "p") int page, Principal principal) {
         return reservationService.getAllUserReservations(page, principal);
     }
 

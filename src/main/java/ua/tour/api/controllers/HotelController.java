@@ -26,8 +26,8 @@ public class HotelController {
         this.hotelService = hotelService;
     }
 
-    @GetMapping("/{page}")
-    public Page<Hotel> getAllHotels(@PathVariable int page) {
+    @GetMapping
+    public Page<Hotel> getAllHotels(@RequestParam(name = "p") int page) {
         return hotelService.getAllHotels(page);
     }
 

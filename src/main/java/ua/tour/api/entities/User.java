@@ -1,5 +1,7 @@
 package ua.tour.api.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,52 +13,37 @@ import java.util.Set;
 @Entity
 public class User implements UserDetails {
 
-    public User() {
-    }
-
-    public User(String username, String password, Set<Role> roles) {
-        this.username = username;
-        this.password = password;
-        this.roles = roles;
-    }
-
-    public User(String username, String email, String password, String fullName, String mobileNumber) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.fullName = fullName;
-        this.mobileNumber = mobileNumber;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
     @NotBlank
     @Column(unique = true)
-    @Size(min=3, message="Name should have at least 2 characters")
+    @Size(min= 3,max = 32)
     private String username;
 
     @NotBlank
     @Column(unique = true)
-    @Email(message ="Invalid email format")
+    @Size(max = 64)
+    @Email
     private String email;
 
     @NotBlank
-    @Size(min = 6, message = "Invalid password (minimum 6 and maximum 32 characters)")
+    @Size(min = 6, max = 512)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotBlank
-    @Size(min = 3, message = "Full name must be longer than 2 characters")
+    @Size(min = 3, max = 64)
     private String fullName;
 
     @NotBlank
-    @Size(min = 13, max = 13, message = "Phone number must consist of 13 digits")
-    @Digits(integer=13, fraction=0, message = "Phone number invalid")
+    @Size(min = 10, max = 10)
+    @Digits(integer=10, fraction=0)
     private String mobileNumber;
 
     @NotNull
+    @JsonIgnore
     @Column(columnDefinition = "INTEGER")
     private boolean active;
 
@@ -77,27 +64,32 @@ public class User implements UserDetails {
         return username;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return isActive();
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
     }

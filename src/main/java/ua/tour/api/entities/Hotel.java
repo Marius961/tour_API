@@ -1,6 +1,7 @@
 package ua.tour.api.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -10,16 +11,21 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Size(min = 3,message = "Hotel name must be longer than 2 characters")
+    @NotBlank
+    @Column(unique = true)
+    @Size(min = 3, max = 256)
     private String name;
 
-    @Size(min = 32, max = 2048, message = "Hotel description must be longer than 31 but less than 2049")
+    @NotBlank
+    @Size(min = 32, max = 2048)
     private String description;
 
-    @Size(min = 2)
+    @NotBlank
+    @Size(min = 2, max = 32)
     private String country;
 
-    @Size(min = 2)
+    @NotBlank
+    @Size(min = 2, max = 86)
     private String location;
 
     @Column(updatable = false)

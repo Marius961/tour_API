@@ -61,7 +61,13 @@ public class TourService {
 
     public void updateTour(Tour tour) throws NotFoundException {
         if (tourRepository.existsById(tour.getId())) {
-            tourRepository.save(tour);
+            boolean isHotelExist = hotelRepository.existsById(tour.getHotel().getId());
+            int existedTours = tourRepository.countByTitleOrDescription(tour.getId(), tour.getTitle(), tour.getDescription());
+            if (isHotelExist) {
+                if (existedTours == 0) {
+                    tourRepository.save(tour);
+                } else throw new IllegalArgumentException("Tour with this title or description already exist");
+            } else throw new NotFoundException("Cannot update hotel from tour, hotel not exist");
         } else throw new NotFoundException("Can not update tour, because it does not exist");
     }
 }

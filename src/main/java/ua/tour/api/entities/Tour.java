@@ -17,17 +17,19 @@ public class Tour {
     private Long id;
 
     @NotBlank
-    @Size(min = 4, max = 32, message = "Min title length is 4 characters and max 32")
+    @Size(min = 4, max = 32)
     private String title;
 
     @NotBlank
-    @Size(min = 32, max = 2048, message = "Description length must be more than 31 characters but less then 2049 ")
+    @Size(min = 32, max = 2048)
     private String description;
 
     @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
     @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
     @NotNull
