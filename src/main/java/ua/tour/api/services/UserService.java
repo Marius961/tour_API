@@ -15,11 +15,7 @@ import ua.tour.api.entities.User;
 import ua.tour.api.exceptions.UserRegistrationFailedException;
 import ua.tour.api.repo.UserRepository;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.nio.file.AccessDeniedException;
 import java.util.Collections;
 import java.util.Optional;
