@@ -18,28 +18,40 @@ public class Tour {
 
     @NotBlank
     @Size(min = 4, max = 32)
+    // назва туру
     private String title;
 
     @NotBlank
     @Size(min = 32, max = 2048)
+    // опис туру
     private String description;
 
+    // вказує що дане поле, як і колонка в бд не можуть мати значення null
     @NotNull
+    // анотація вказує що дане поле є датою, в ній можна вказати що зберігати (дату, час чи те і інше)
     @Temporal(TemporalType.TIMESTAMP)
+    // дата початку туру
     private Date startDate;
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
+    // дата закінчення туру
     private Date endDate;
 
     @NotNull
+    // кількість місць у турі
     private Integer seatCount;
 
+    // анотація  @OneToOne вказує що один запис в цій таблиці відноситься лише до одного запису у таблиці hotel
+    // FetchType.EAGER - означає що при завантаженні з бд, будуть завантажені і всі вкладені об'єкти з інших таблиць
     @OneToOne(fetch = FetchType.EAGER)
+    // @JoinColumn(name = "hotel_id") - вказує що колонка яка буде створена в цій таблиці повинна мати задану назву
     @JoinColumn(name = "hotel_id")
+    // готель, до якого належить тур
     private Hotel hotel;
 
     @Column(updatable = false)
+    // назва фото туру
     private String imageSrc;
 
     public Long getId() {

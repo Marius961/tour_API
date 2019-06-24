@@ -25,11 +25,13 @@ public class User implements UserDetails {
     @NotBlank
     @Column(unique = true)
     @Size(max = 64)
+    // анотація яка автоматично валідує емейл (запис в бд не може бути доданим поки дане поле не буде містити емейл)
     @Email
     private String email;
 
     @NotBlank
     @Size(min = 6, max = 512)
+    // означає що даний параметр може бути лише отриманим в JSON, але при цьому при перетворенні об'єкта в JSON дане поле не буде враховано
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
@@ -39,16 +41,22 @@ public class User implements UserDetails {
 
     @NotBlank
     @Size(min = 10, max = 10)
+    // вказує що дане поле типу String може містити лише 10 символів (10 цифр мобільного)
     @Digits(integer=10, fraction=0)
     private String mobileNumber;
 
     @NotNull
+    // поле не додається в JSON
     @JsonIgnore
+    // columnDefinition = "INTEGER" - вказує примусовий тип колонки
     @Column(columnDefinition = "INTEGER")
     private boolean active;
 
+    // анотація вказує що даний список є колекцією класу Role
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    // означає що під дану колекцію має бути створена таблиця з іменем user_role а назва колонки в таблиці User повинна мати назву user_id
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    // вказує що даний набір даних є перечисленням з типом String
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 

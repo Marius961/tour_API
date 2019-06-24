@@ -26,26 +26,31 @@ public class HotelController {
         this.hotelService = hotelService;
     }
 
+    // метод GET, /api/hotel. Метод дозволяє отримати список всіх готелів, приймає номер сторінки як URL параметр
     @GetMapping
     public Page<Hotel> getAllHotels(@RequestParam(name = "p") int page) {
         return hotelService.getAllHotels(page);
     }
 
+    // метод GET, /api/hotel/{id}. Метод повертає готель по id, яке передається як URL параметр
     @GetMapping("/{id}")
     public Hotel getHotelById(@PathVariable Long id) throws NotFoundException {
         return hotelService.getHotelById(id);
     }
 
+    // метод PUT, /api/hotel. Метод дозволяє оновити дані готелю, приймає готель у тілі запиту, у форматі JSON
     @PutMapping
     public void updateHotel(@Valid @RequestBody Hotel hotel) throws NotFoundException {
         hotelService.updateHotel(hotel);
     }
 
+    // метод DELETE, /api/hotel/{id}. Метод дозволяє видалити готель по ID яке передається як path параметр у URL
     @DeleteMapping("/{id}")
     public void deleteHotel(@PathVariable Long id) throws NotFoundException, DeletionException, FileNotFoundException {
         hotelService.deleteHotel(id);
     }
 
+    // метод POST, /api/hotel. Використовується для додавання нового готелю, приймає об'єкт готелю у тілі запиту у форматі JSON, а також файл (фото)
     @PostMapping
     public Map<String, Long> addHotel(
             @Valid @RequestPart(name = "hotel") Hotel hotel,

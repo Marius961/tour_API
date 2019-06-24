@@ -26,22 +26,26 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // метод POST, /api/auth/sign-up. Використовується для реєстрації нових користувачів, приймає дані у тілі запиту у форматі JSON (об'єкт класу User)
     @PostMapping("/sign-up")
     public void signUp(@Valid @RequestBody User user) throws UserRegistrationFailedException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.createUser(user);
     }
 
+    // метод POST, /api/auth/is-registered. Використовується для перевірки чи користувач існує за допомогою імені, ім'я передається у тілі запиту у форматі JSON
     @PostMapping("/is-registered")
     public Map<String, Boolean> checkUsername(@RequestBody Map<String, String> payload) {
         return Collections.singletonMap("isRegistered", userService.isRegistered(payload.get("username")));
     }
 
+    // метод POST, /api/auth/is-email-exist. Використовується для перевірки чи емейл користувача існує, емейл передається у тілі запиту у форматі JSON
     @PostMapping("/is-email-exist")
     public Map<String, Boolean> checkEmail(@RequestBody Map<String, String> payload) {
         return Collections.singletonMap("isExist", userService.isEmailExist(payload.get("email")));
     }
 
+    // метод POST, /api/auth/change-password. Метод для зміни паролю, приймає у тілі запиту старий і новий пароль у форматі JSON
     @PostMapping("/change-password")
     public void changePassword(@RequestBody Map<String, String> passwordData) throws AccessDeniedException {
         userService.changePassword(
@@ -49,6 +53,7 @@ public class AuthController {
                 passwordEncoder.encode(passwordData.get("newPassword")));
     }
 
+    // метод POST, /api/auth/update-user-data. Метод для оновлення даних облікового запису користувача, приймає набір даних у тілі запиту, у форматі JSON
     @PostMapping("/update-user-data")
     public void updateUserData(@RequestBody Map<String, String> newUserData) {
         userService.updateUserData(
@@ -58,6 +63,7 @@ public class AuthController {
                 newUserData.get("mobileNumber"));
     }
 
+    // метод GET, /api/auth/user-data. Метод дозволяє отримати дані облікового запису користувача
     @GetMapping("/user-data")
     public User getUserData(Principal principal) {
         return (User) userService.loadUserByUsername(principal.getName());
